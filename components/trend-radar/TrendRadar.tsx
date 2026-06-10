@@ -165,7 +165,7 @@ export function TrendRadar() {
                   <Icon name="lightbulb" /> <b style={{ color: 'var(--kx-text)' }}>Content idea for you:</b> {mega.idea}
                 </p>
               </div>
-              <a className="kx-btn" href={`/content-generator?topic=${encodeURIComponent(mega.idea)}`}>
+              <a className="kx-btn" href={`/content-generator?topic=${encodeURIComponent(mega.idea)}&context=${encodeURIComponent(`${mega.title} — ${mega.summary} (velocity ${mega.velocity})`)}`}>
                 <Icon name="auto_awesome" filled /> Generate Content From This Trend
               </a>
             </Card>
@@ -192,7 +192,7 @@ export function TrendRadar() {
                 <p className="kx-help" style={{ margin: '0 0 14px' }}>
                   <Icon name="lightbulb" /> Idea: {trend.idea}
                 </p>
-                <a className="kx-btn is-secondary is-sm" href={`/content-generator?topic=${encodeURIComponent(trend.idea)}`}>
+                <a className="kx-btn is-secondary is-sm" href={`/content-generator?topic=${encodeURIComponent(trend.idea)}&context=${encodeURIComponent(`${trend.title} — ${trend.summary} (velocity ${trend.velocity})`)}`}>
                   <Icon name="auto_awesome" /> Generate From This Trend
                 </a>
               </Card>
@@ -214,7 +214,7 @@ export function TrendRadar() {
                   <h4>{hook.text}</h4>
                   <p>{hook.meta}</p>
                 </div>
-                <a aria-label="Use this hook" className="kx-btn is-secondary is-sm" href={`/content-generator?topic=${encodeURIComponent(hook.text)}`}>
+                <a aria-label="Use this hook" className="kx-btn is-secondary is-sm" href={`/content-generator?topic=${encodeURIComponent(hook.text)}&context=${encodeURIComponent(`Use this proven viral hook structure: ${hook.text} (${hook.meta})`)}`}>
                   <Icon name="east" /> Use Hook
                 </a>
               </div>

@@ -1,5 +1,6 @@
 import { ContentOsAppShell } from '@/components/ContentOsAppShell';
-import { ContentGeneratorStudio } from '@/components/content-generator/ContentGeneratorStudio';
+import { ContentGeneratorStudio, type TextModelChoice } from '@/components/content-generator/ContentGeneratorStudio';
+import { getTextModelOptions } from '@/lib/ai/models';
 import { getActiveWorkspace } from '@/lib/auth/workspace';
 
 export const dynamic = 'force-dynamic';
@@ -10,15 +11,21 @@ export const metadata = {
 };
 
 type ContentGeneratorPageProps = {
-  searchParams?: Promise<{ topic?: string }>;
+  searchParams?: Promise<{ topic?: string; context?: string }>;
 };
 
 export default async function ContentGeneratorPage({ searchParams }: ContentGeneratorPageProps) {
   const resolved = await searchParams;
   const workspace = await getActiveWorkspace();
+  const models: TextModelChoice[] = getTextModelOptions().map(({ id, label, note, available }) => ({ id, label, note, available }));
   return (
     <ContentOsAppShell activeLabel="Content Generator" searchPlaceholder="Search your generated content...">
-      <ContentGeneratorStudio initialTopic={resolved?.topic ?? ''} workspaceId={workspace?.workspaceId ?? null} />
+      <ContentGeneratorStudio
+        initialContext={resolved?.context ?? ''}
+        initialTopic={resolved?.topic ?? ''}
+        models={models}
+        workspaceId={workspace?.workspaceId ?? null}
+      />
     </ContentOsAppShell>
   );
 }

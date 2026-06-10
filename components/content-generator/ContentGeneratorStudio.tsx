@@ -26,45 +26,30 @@ const contentTypes = [
   { id: 'carousel', label: 'Carousel', icon: 'view_carousel' }
 ];
 
-type GeneratedPost = {
+export type TextModelChoice = {
+  id: string;
+  label: string;
+  note: string;
+  available: boolean;
+};
+
+type Variant = {
+  angle: string;
   hook: string;
   body: string[];
   hashtags: string;
   score: number;
-  source: 'ai' | 'demo';
 };
 
-function buildPost(goal: string, platform: string, type: string, topic: string): GeneratedPost {
+type DraftResult = {
+  variants: Variant[];
+  source: 'ai' | 'demo';
+  personalized: boolean;
+};
+
+function buildDemoVariants(goal: string, platform: string, type: string, topic: string): DraftResult {
   const cleanTopic = topic.trim().replace(/\.$/, '');
   const platformLabel = platforms.find((item) => item.id === platform)?.label ?? 'social';
-  const hooks: Record<string, string> = {
-    sell: `Stop scrolling — this is the sign you were waiting for. ${cleanTopic} 👀`,
-    grow: `Most people get this wrong about ${cleanTopic.toLowerCase() || 'growing online'}. Here's the truth:`,
-    engage: `Hot take: ${cleanTopic || 'your audience wants more from you'}. Agree or disagree? 👇`,
-    teach: `3 things nobody tells you about ${cleanTopic.toLowerCase() || 'getting started'}:`
-  };
-  const bodies: Record<string, string[]> = {
-    sell: [
-      `We made it ridiculously easy: ${cleanTopic}.`,
-      'Spots are limited and they go fast — when they’re gone, they’re gone.',
-      'Tap the link, lock yours in, and thank yourself later.'
-    ],
-    grow: [
-      `Here’s what actually works on ${platformLabel}: show up consistently, lead with value, and make the first 2 seconds count.`,
-      `${cleanTopic ? `${cleanTopic} is your unfair advantage — most of your competitors aren’t talking about it.` : 'Consistency beats perfection, every single week.'}`,
-      'Save this for your next posting day. 🔖'
-    ],
-    engage: [
-      `We keep hearing both sides of this, so let’s settle it in the comments.`,
-      `${cleanTopic ? `Our take: ${cleanTopic} matters more than people admit.` : 'Our take: showing up beats going viral.'}`,
-      'Drop a 🔥 if you agree — or tell us why we’re wrong.'
-    ],
-    teach: [
-      `1. Start before you feel ready — momentum creates clarity.`,
-      `2. ${cleanTopic ? `Use ${cleanTopic.toLowerCase()} as your hook — it’s what your audience is searching for.` : 'Talk about the questions customers ask you every day.'}`,
-      '3. End every post with one clear next step. That’s it. That’s the playbook.'
-    ]
-  };
   const tagSets: Record<string, string> = {
     instagram: '#instagood #reels #smallbusiness',
     tiktok: '#fyp #tiktokmademebuyit #smallbusiness',
@@ -73,43 +58,101 @@ function buildPost(goal: string, platform: string, type: string, topic: string):
     x: '#marketing #buildinpublic',
     youtube: '#shorts #howto'
   };
+  const hashtags = tagSets[platform] ?? '#content';
   const typeBoost = type === 'reel' ? 6 : type === 'carousel' ? 4 : 0;
   const topicBoost = Math.min(10, Math.floor(cleanTopic.length / 6));
-  return {
-    hook: hooks[goal] ?? hooks.grow,
-    body: bodies[goal] ?? bodies.grow,
-    hashtags: tagSets[platform] ?? '#content',
-    score: 74 + typeBoost + topicBoost,
-    source: 'demo' as const
-  };
+  const base = 72 + typeBoost + topicBoost;
+
+  const variants: Variant[] = [
+    {
+      angle: 'Bold & Direct',
+      hook: `Stop scrolling — ${cleanTopic || 'this is the sign you were waiting for'}. 👀`,
+      body: [
+        `We made it ridiculously easy: ${cleanTopic || 'one simple step and you’re in'}.`,
+        'Spots are limited and they go fast — when they’re gone, they’re gone.',
+        'Tap the link, lock yours in, and thank yourself later.'
+      ],
+      hashtags,
+      score: base + 2
+    },
+    {
+      angle: 'Story-Driven',
+      hook: `Most people get this wrong about ${cleanTopic.toLowerCase() || 'growing online'}. Here's the truth:`,
+      body: [
+        `Here’s what actually works on ${platformLabel}: show up consistently, lead with value, and make the first 2 seconds count.`,
+        cleanTopic ? `${cleanTopic} is your unfair advantage — most of your competitors aren’t talking about it.` : 'Consistency beats perfection, every single week.',
+        'Save this for your next posting day. 🔖'
+      ],
+      hashtags,
+      score: base
+    },
+    {
+      angle: 'Question Hook',
+      hook: `Hot take: ${cleanTopic || 'your audience wants more from you'}. Agree or disagree? 👇`,
+      body: [
+        'We keep hearing both sides of this, so let’s settle it in the comments.',
+        cleanTopic ? `Our take: ${cleanTopic} matters more than people admit.` : 'Our take: showing up beats going viral.',
+        'Drop a 🔥 if you agree — or tell us why we’re wrong.'
+      ],
+      hashtags,
+      score: base - 3
+    }
+  ];
+
+  return { variants: variants.sort((a, b) => b.score - a.score), source: 'demo', personalized: false };
 }
 
-async function requestDraft(goal: string, platform: string, type: string, topic: string): Promise<GeneratedPost> {
+type DraftRequest = {
+  goal: string;
+  platform: string;
+  type: string;
+  topic: string;
+  model: string;
+  trendContext: string;
+};
+
+async function requestDraft(params: DraftRequest): Promise<DraftResult> {
   try {
     const response = await fetch('/api/ai/generate-post', {
       method: 'POST',
       headers: { 'content-type': 'application/json' },
-      body: JSON.stringify({ goal, platform, contentType: type, topic })
+      body: JSON.stringify({
+        goal: params.goal,
+        platform: params.platform,
+        contentType: params.type,
+        topic: params.topic,
+        model: params.model,
+        trendContext: params.trendContext || undefined
+      })
     });
     if (response.ok) {
-      const data = (await response.json()) as Partial<GeneratedPost> & { source?: 'ai' | 'demo' };
-      if (data.source === 'ai' && data.hook && Array.isArray(data.body)) {
-        return { hook: data.hook, body: data.body, hashtags: data.hashtags ?? '', score: data.score ?? 80, source: 'ai' };
+      const data = (await response.json()) as { source?: 'ai' | 'demo'; variants?: Variant[]; personalized?: boolean };
+      if (data.source === 'ai' && Array.isArray(data.variants) && data.variants.length > 0) {
+        return { variants: data.variants, source: 'ai', personalized: Boolean(data.personalized) };
       }
     }
   } catch {
     // Network/API problems fall through to the local demo template.
   }
-  return buildPost(goal, platform, type, topic);
+  return buildDemoVariants(params.goal, params.platform, params.type, params.topic);
 }
 
-export function ContentGeneratorStudio({ initialTopic, workspaceId }: { initialTopic: string; workspaceId: string | null }) {
+type ContentGeneratorStudioProps = {
+  initialTopic: string;
+  initialContext: string;
+  workspaceId: string | null;
+  models: TextModelChoice[];
+};
+
+export function ContentGeneratorStudio({ initialTopic, initialContext, workspaceId, models }: ContentGeneratorStudioProps) {
   const [goal, setGoal] = useState('');
   const [platform, setPlatform] = useState('');
   const [contentType, setContentType] = useState('');
   const [topic, setTopic] = useState(initialTopic);
+  const [model, setModel] = useState(models.find((m) => m.available)?.id ?? 'auto');
   const [generating, setGenerating] = useState(false);
-  const [result, setResult] = useState<GeneratedPost | null>(null);
+  const [result, setResult] = useState<DraftResult | null>(null);
+  const [variantIndex, setVariantIndex] = useState(0);
   const [savedContentId, setSavedContentId] = useState<string | null>(null);
   const [busyAction, setBusyAction] = useState<'save' | 'schedule' | null>(null);
   const [toast, setToast] = useState('');
@@ -119,23 +162,30 @@ export function ContentGeneratorStudio({ initialTopic, workspaceId }: { initialT
     [goal, platform, contentType, topic]
   );
   const ready = stepsDone.every(Boolean);
+  const current = result?.variants[variantIndex] ?? null;
 
   function generate() {
     if (!ready || generating) return;
     setGenerating(true);
     setResult(null);
+    setVariantIndex(0);
     setSavedContentId(null);
-    void requestDraft(goal, platform, contentType, topic).then((draft) => {
+    void requestDraft({ goal, platform, type: contentType, topic, model, trendContext: initialContext }).then((draft) => {
       setResult(draft);
       setGenerating(false);
     });
   }
 
-  function draftAsText(draft: GeneratedPost) {
+  function selectVariant(index: number) {
+    setVariantIndex(index);
+    setSavedContentId(null);
+  }
+
+  function draftAsText(draft: Variant) {
     return `${draft.hook}\n\n${draft.body.join('\n\n')}\n\n${draft.hashtags}`;
   }
 
-  async function persistDraft(draft: GeneratedPost): Promise<string | null> {
+  async function persistDraft(draft: Variant): Promise<string | null> {
     if (savedContentId) return savedContentId;
     const response = await fetch('/api/generated-content', {
       method: 'POST',
@@ -145,7 +195,16 @@ export function ContentGeneratorStudio({ initialTopic, workspaceId }: { initialT
         prompt: topic,
         content: draftAsText(draft),
         content_type: contentType || 'post',
-        metadata: { goal, platform, score: draft.score, source: draft.source, hook: draft.hook }
+        metadata: {
+          goal,
+          platform,
+          score: draft.score,
+          angle: draft.angle,
+          source: result?.source ?? 'demo',
+          personalized: result?.personalized ?? false,
+          model,
+          hook: draft.hook
+        }
       })
     });
     const json = (await response.json()) as { data?: { id?: string }; error?: string };
@@ -155,14 +214,14 @@ export function ContentGeneratorStudio({ initialTopic, workspaceId }: { initialT
   }
 
   async function saveToLibrary() {
-    if (!result || busyAction) return;
+    if (!current || busyAction) return;
     if (!workspaceId) {
       notify('Draft copied locally — log in to save it to your library.');
       return;
     }
     setBusyAction('save');
     try {
-      const id = await persistDraft(result);
+      const id = await persistDraft(current);
       notify(id ? 'Saved to your library' : 'Could not save — please try again.');
     } catch {
       notify('Could not save — check your connection and try again.');
@@ -172,10 +231,10 @@ export function ContentGeneratorStudio({ initialTopic, workspaceId }: { initialT
   }
 
   async function scheduleDraft() {
-    if (!result || busyAction || !workspaceId) return;
+    if (!current || busyAction || !workspaceId) return;
     setBusyAction('schedule');
     try {
-      const contentId = await persistDraft(result);
+      const contentId = await persistDraft(current);
       if (!contentId) {
         notify('Could not schedule — saving the draft failed.');
         return;
@@ -191,7 +250,7 @@ export function ContentGeneratorStudio({ initialTopic, workspaceId }: { initialT
           generated_content_id: contentId,
           scheduled_for: tomorrowNine.toISOString(),
           status: 'scheduled',
-          metadata: { platform, title: result.hook, excerpt: result.body[0] ?? '' }
+          metadata: { platform, title: current.hook, excerpt: current.body[0] ?? '' }
         })
       });
       const json = (await response.json()) as { error?: string };
@@ -209,19 +268,29 @@ export function ContentGeneratorStudio({ initialTopic, workspaceId }: { initialT
   }
 
   async function copyResult() {
-    if (!result) return;
-    await navigator.clipboard.writeText(`${result.hook}\n\n${result.body.join('\n\n')}\n\n${result.hashtags}`);
+    if (!current) return;
+    await navigator.clipboard.writeText(draftAsText(current));
     notify('Copied to clipboard');
   }
+
+  const selectedModel = models.find((m) => m.id === model);
 
   return (
     <>
       <PageHeader
         title="Content Generator"
         icon="auto_awesome"
-        description="Answer four quick questions and the AI writes a ready-to-post draft for you. No blank pages, no guesswork."
+        description="Answer four quick questions and the AI writes three ready-to-post drafts for you. No blank pages, no guesswork."
         badge={<Badge tone="cyan" dot pulsing>AI Ready</Badge>}
       />
+
+      {initialContext ? (
+        <Card compact>
+          <p className="kx-help" style={{ margin: 0 }}>
+            <Icon name="radar" /> <b style={{ color: 'var(--kx-text)' }}>Riding a trend:</b> {initialContext}
+          </p>
+        </Card>
+      ) : null}
 
       <div className="kx-split">
         {/* Guided builder */}
@@ -283,9 +352,25 @@ export function ContentGeneratorStudio({ initialTopic, workspaceId }: { initialT
               </p>
             </div>
 
+            <div className="kx-field">
+              <label className="kx-label" htmlFor="cg-model">
+                AI Model
+                {selectedModel && !selectedModel.available ? <Badge tone="gold">needs key</Badge> : null}
+              </label>
+              <select className="kx-select" id="cg-model" onChange={(event) => setModel(event.target.value)} value={model}>
+                {models.map((option) => (
+                  <option disabled={!option.available} key={option.id} value={option.id}>
+                    {option.label}
+                    {option.available ? '' : ' — add key to enable'}
+                  </option>
+                ))}
+              </select>
+              {selectedModel ? <p className="kx-help">{selectedModel.note}</p> : null}
+            </div>
+
             <button className="kx-btn" disabled={!ready || generating} onClick={generate} type="button">
               {generating ? <span className="kx-spinner" /> : <Icon name="auto_awesome" filled />}
-              {generating ? 'Writing your post...' : 'Generate Content'}
+              {generating ? 'Writing 3 drafts...' : 'Generate Content'}
             </button>
             {!ready ? <p className="kx-help">Finish the 4 steps above and the Generate button lights up.</p> : null}
           </div>
@@ -293,27 +378,48 @@ export function ContentGeneratorStudio({ initialTopic, workspaceId }: { initialT
 
         {/* Output */}
         <div style={{ display: 'grid', gap: 'var(--kx-gutter)' }}>
-          {result ? (
+          {result && current ? (
             <>
               <Card
                 variant="ai"
-                title="Your draft is ready"
+                title="Your drafts are ready"
                 icon="auto_awesome"
-                headActions={<Ring label="score" size={64} value={Math.min(result.score, 99)} />}
+                headActions={<Ring label="score" size={64} value={Math.min(current.score, 99)} />}
               >
                 {result.source === 'demo' ? (
                   <p className="kx-help" style={{ marginBottom: 12 }}>
-                    <Icon name="info" /> Sample draft — add an <b>OPENAI_API_KEY</b> or <b>GEMINI_API_KEY</b> to enable live AI writing.
+                    <Icon name="info" /> Sample drafts — add an <b>OPENAI_API_KEY</b> or <b>GEMINI_API_KEY</b> to enable live AI writing.
                   </p>
                 ) : null}
+                {result.personalized ? (
+                  <p style={{ marginBottom: 12, marginTop: 0 }}>
+                    <Badge tone="green" icon="storefront">Personalized to your Business Profile</Badge>
+                  </p>
+                ) : null}
+
+                {result.variants.length > 1 ? (
+                  <div className="kx-chip-row" style={{ marginBottom: 16 }}>
+                    {result.variants.map((variant, index) => (
+                      <button
+                        className={`kx-chip${index === variantIndex ? ' is-selected' : ''}`}
+                        key={variant.angle + index}
+                        onClick={() => selectVariant(index)}
+                        type="button"
+                      >
+                        {variant.angle} · {Math.min(variant.score, 99)}
+                      </button>
+                    ))}
+                  </div>
+                ) : null}
+
                 <div style={{ display: 'grid', gap: 14 }}>
-                  <strong style={{ color: 'var(--kx-text)', fontSize: 17, lineHeight: 1.4 }}>{result.hook}</strong>
-                  {result.body.map((paragraph) => (
+                  <strong style={{ color: 'var(--kx-text)', fontSize: 17, lineHeight: 1.4 }}>{current.hook}</strong>
+                  {current.body.map((paragraph) => (
                     <p key={paragraph} style={{ color: 'var(--kx-text-muted)', fontSize: 14.5, lineHeight: 1.65, margin: 0 }}>
                       {paragraph}
                     </p>
                   ))}
-                  <p style={{ color: 'var(--kx-primary)', fontSize: 13.5, fontWeight: 600, margin: 0 }}>{result.hashtags}</p>
+                  <p style={{ color: 'var(--kx-primary)', fontSize: 13.5, fontWeight: 600, margin: 0 }}>{current.hashtags}</p>
                 </div>
                 <hr className="kx-divider" style={{ margin: '18px 0' }} />
                 <div style={{ display: 'flex', flexWrap: 'wrap', gap: 8 }}>
@@ -340,8 +446,8 @@ export function ContentGeneratorStudio({ initialTopic, workspaceId }: { initialT
               </Card>
               <Card compact title="What happens next?" icon="route">
                 <p className="kx-card-sub" style={{ margin: 0 }}>
-                  Copy the draft straight to your platform, save it to reuse later, or hit <b>Schedule It</b> to drop it on your
-                  Content Calendar.
+                  Pick your favorite of the 3 angles above, then copy it, save it to your library, or hit <b>Schedule It</b> to
+                  drop it on your Content Calendar.
                 </p>
               </Card>
             </>
@@ -358,8 +464,8 @@ export function ContentGeneratorStudio({ initialTopic, workspaceId }: { initialT
           ) : (
             <EmptyState
               icon="draw"
-              title="Your draft will appear here"
-              description="Pick a goal, platform, and content type on the left, tell us the topic, and press Generate. You'll get a ready-to-post draft in seconds."
+              title="Your drafts will appear here"
+              description="Pick a goal, platform, and content type on the left, tell us the topic, and press Generate. You'll get three different takes in seconds."
             />
           )}
         </div>

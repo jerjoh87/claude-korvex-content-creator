@@ -10,6 +10,21 @@ const mediaTypes = [
 
 const ratios = ['1:1', '16:9', '9:16', '4:5'];
 
+export type MediaModelChoice = {
+  id: string;
+  label: string;
+  note: string;
+  available: boolean;
+};
+
+/** Canva is a design handoff, not a model — open the right canvas size. */
+const canvaLinks: Record<string, string> = {
+  '1:1': 'https://www.canva.com/create/instagram-posts/',
+  '16:9': 'https://www.canva.com/create/youtube-thumbnails/',
+  '9:16': 'https://www.canva.com/create/instagram-stories/',
+  '4:5': 'https://www.canva.com/create/instagram-posts/'
+};
+
 const styles = [
   { id: 'cinematic', label: 'Cinematic' },
   { id: 'minimal', label: 'Minimal' },
@@ -35,8 +50,9 @@ const seedGenerations: Generation[] = [
   { id: 4, title: 'Emerald Waves', type: 'Image', ratio: '4:5', art: 4, status: 'ready' }
 ];
 
-export function MediaStudio() {
+export function MediaStudio({ mediaModels }: { mediaModels: MediaModelChoice[] }) {
   const [prompt, setPrompt] = useState('');
+  const [mediaModel, setMediaModel] = useState(mediaModels.find((m) => m.available)?.id ?? 'demo');
   const [mediaType, setMediaType] = useState('image');
   const [ratio, setRatio] = useState('16:9');
   const [style, setStyle] = useState('cinematic');
@@ -77,7 +93,7 @@ export function MediaStudio() {
     void fetch('/api/ai/generate-media', {
       method: 'POST',
       headers: { 'content-type': 'application/json' },
-      body: JSON.stringify({ prompt: prompt.trim(), ratio, style })
+      body: JSON.stringify({ prompt: prompt.trim(), ratio, style, model: mediaModel })
     })
       .then(async (response) => {
         const data = response.ok ? ((await response.json()) as { source?: string; imageUrl?: string }) : null;
@@ -153,6 +169,21 @@ export function MediaStudio() {
                 </div>
               </div>
 
+              <div className="kx-field">
+                <label className="kx-label" htmlFor="ms-model">AI Model</label>
+                <select className="kx-select" id="ms-model" onChange={(event) => setMediaModel(event.target.value)} value={mediaModel}>
+                  {mediaModels.map((option) => (
+                    <option disabled={!option.available} key={option.id} value={option.id}>
+                      {option.label}
+                      {option.available ? '' : ' — add key to enable'}
+                    </option>
+                  ))}
+                </select>
+                {mediaModels.find((m) => m.id === mediaModel) ? (
+                  <p className="kx-help">{mediaModels.find((m) => m.id === mediaModel)?.note}</p>
+                ) : null}
+              </div>
+
               <button className="kx-btn" disabled={!ready || generating} onClick={generate} type="button">
                 {generating ? <span className="kx-spinner" /> : <Icon name="auto_awesome" filled />}
                 {generating ? 'Creating your asset...' : 'Generate'}
@@ -194,6 +225,16 @@ export function MediaStudio() {
                       <button aria-label={`Reuse prompt for ${item.title}`} className="kx-icon-btn" onClick={() => notify('Prompt loaded into the builder')} type="button">
                         <Icon name="replay" />
                       </button>
+                      <a
+                        aria-label={`Design ${item.title} in Canva`}
+                        className="kx-icon-btn"
+                        href={canvaLinks[item.ratio] ?? 'https://www.canva.com/create/'}
+                        rel="noreferrer"
+                        target="_blank"
+                        title="Design in Canva"
+                      >
+                        <Icon name="palette" />
+                      </a>
                     </div>
                   </div>
                 </div>
