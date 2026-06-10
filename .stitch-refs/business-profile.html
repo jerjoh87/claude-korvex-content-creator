@@ -1,0 +1,386 @@
+<!DOCTYPE html>
+
+<html class="dark" lang="en"><head>
+<meta charset="utf-8"/>
+<meta content="width=device-width, initial-scale=1.0" name="viewport"/>
+<title>Business Profile - Content OS</title>
+<script src="https://cdn.tailwindcss.com?plugins=forms,container-queries"></script>
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&amp;display=swap" rel="stylesheet"/>
+<link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&amp;display=swap" rel="stylesheet"/>
+<link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&amp;display=swap" rel="stylesheet"/>
+<script id="tailwind-config">
+        tailwind.config = {
+            darkMode: "class",
+            theme: {
+                extend: {
+                    "colors": {
+                        "primary-fixed-dim": "#00dce6",
+                        "on-tertiary-fixed": "#00210a",
+                        "surface-container-lowest": "#0a0e18",
+                        "primary": "#e0fdff",
+                        "primary-container": "#00f2fe",
+                        "on-tertiary-fixed-variant": "#005323",
+                        "surface-dim": "#0f131d",
+                        "outline": "#849495",
+                        "on-secondary-container": "#ddb7ff",
+                        "secondary": "#ddb7ff",
+                        "on-error": "#690005",
+                        "surface-container-low": "#171b26",
+                        "on-tertiary-container": "#006f32",
+                        "on-primary-fixed-variant": "#004f53",
+                        "tertiary": "#e3ffe2",
+                        "on-secondary": "#4a0080",
+                        "tertiary-fixed": "#65ff91",
+                        "surface-variant": "#313540",
+                        "surface-container-highest": "#313540",
+                        "error": "#ffb4ab",
+                        "on-primary-container": "#006a70",
+                        "surface-bright": "#353944",
+                        "on-secondary-fixed-variant": "#6900b3",
+                        "surface": "#0f131d",
+                        "on-background": "#dfe2f1",
+                        "inverse-surface": "#dfe2f1",
+                        "outline-variant": "#3a494b",
+                        "on-tertiary": "#003916",
+                        "surface-container-high": "#262a35",
+                        "on-primary-fixed": "#002022",
+                        "secondary-fixed-dim": "#ddb7ff",
+                        "on-surface-variant": "#b9cacb",
+                        "inverse-primary": "#00696f",
+                        "surface-tint": "#00dce6",
+                        "error-container": "#93000a",
+                        "secondary-fixed": "#f0dbff",
+                        "primary-fixed": "#6ff6ff",
+                        "on-surface": "#dfe2f1",
+                        "tertiary-fixed-dim": "#3ae275",
+                        "on-primary": "#00373a",
+                        "on-error-container": "#ffdad6",
+                        "tertiary-container": "#55f888",
+                        "inverse-on-surface": "#2c303b",
+                        "surface-container": "#1c1f2a",
+                        "on-secondary-fixed": "#2c0050",
+                        "background": "#0f131d",
+                        "secondary-container": "#7900cd"
+                    },
+                    "borderRadius": {
+                        "DEFAULT": "0.25rem",
+                        "lg": "0.5rem",
+                        "xl": "0.75rem",
+                        "full": "9999px"
+                    },
+                    "spacing": {
+                        "gutter": "1.5rem",
+                        "stack-sm": "0.5rem",
+                        "stack-md": "1rem",
+                        "stack-lg": "2rem",
+                        "card-padding": "1.5rem",
+                        "container-margin": "2rem"
+                    },
+                    "fontFamily": {
+                        "body-lg": ["Inter"],
+                        "label-caps": ["Inter"],
+                        "data-mono": ["Inter"],
+                        "headline-lg": ["Inter"],
+                        "body-sm": ["Inter"],
+                        "headline-xl": ["Inter"],
+                        "headline-md": ["Inter"],
+                        "headline-lg-mobile": ["Inter"]
+                    },
+                    "fontSize": {
+                        "body-lg": ["16px", { "lineHeight": "24px", "fontWeight": "400" }],
+                        "label-caps": ["12px", { "lineHeight": "16px", "letterSpacing": "0.05em", "fontWeight": "700" }],
+                        "data-mono": ["14px", { "lineHeight": "20px", "letterSpacing": "-0.01em", "fontWeight": "500" }],
+                        "headline-lg": ["30px", { "lineHeight": "38px", "letterSpacing": "-0.01em", "fontWeight": "600" }],
+                        "body-sm": ["14px", { "lineHeight": "20px", "fontWeight": "400" }],
+                        "headline-xl": ["40px", { "lineHeight": "48px", "letterSpacing": "-0.02em", "fontWeight": "700" }],
+                        "headline-md": ["20px", { "lineHeight": "28px", "fontWeight": "600" }],
+                        "headline-lg-mobile": ["24px", { "lineHeight": "32px", "fontWeight": "600" }]
+                    }
+                }
+            }
+        }
+    </script>
+<style>
+        body {
+            background-color: #0B0F19; /* Base Dark Navy */
+            color: #dfe2f1;
+        }
+        .glass-card {
+            background: rgba(31, 35, 42, 0.4);
+            backdrop-filter: blur(20px);
+            -webkit-backdrop-filter: blur(20px);
+            border: 1px solid rgba(255, 255, 255, 0.1);
+        }
+        .glow-hover:hover {
+            box-shadow: 0 0 20px rgba(0, 220, 230, 0.2);
+            border-color: rgba(0, 220, 230, 0.4);
+        }
+        .ai-gradient-border {
+            position: relative;
+            background-clip: padding-box;
+            border: 1px solid transparent;
+        }
+        .ai-gradient-border::before {
+            content: '';
+            position: absolute;
+            top: 0; right: 0; bottom: 0; left: 0;
+            z-index: -1;
+            margin: -1px;
+            border-radius: inherit;
+            background: linear-gradient(to right, #00dce6, #ddb7ff);
+        }
+        .gradient-text {
+            background: linear-gradient(to right, #00dce6, #ddb7ff);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+        }
+    </style>
+</head>
+<body class="bg-background text-on-background min-h-screen flex font-body-lg">
+<!-- SideNavBar -->
+<nav class="hidden md:flex h-screen w-72 flex-col fixed left-0 top-0 bg-surface-container-lowest/80 backdrop-blur-xl border-r border-white/10 shadow-[0_0_20px_rgba(0,220,230,0.05)] z-50">
+<div class="p-gutter flex flex-col gap-stack-md h-full">
+<div class="mb-8 px-4 flex items-center gap-3">
+<div class="w-10 h-10 rounded-full bg-primary-container flex items-center justify-center text-on-primary-container font-headline-md font-bold">C</div>
+<div>
+<h1 class="font-headline-md text-headline-md font-bold tracking-tight text-primary">CONTENT OS</h1>
+<p class="text-[10px] uppercase tracking-widest text-primary/60 font-label-caps">AI MARKETING OS</p>
+</div>
+</div>
+<div class="flex-1 overflow-y-auto space-y-2">
+<a class="flex items-center gap-3 px-4 py-3 text-on-surface-variant font-medium transition-all duration-200 hover:bg-surface-variant/20 hover:text-primary hover:shadow-[0_0_10px_rgba(0,220,230,0.1)] scale-[0.98] active:scale-95 rounded-lg" href="#">
+<span class="material-symbols-outlined" style="font-variation-settings: 'FILL' 0;">dashboard</span>
+                    Dashboard
+                </a>
+<a class="relative flex items-center gap-3 px-4 py-3 text-primary font-bold before:absolute before:left-0 before:w-1 before:h-6 before:bg-primary before:rounded-full bg-surface-variant/30 backdrop-blur-md rounded-lg shadow-[0_0_15px_rgba(0,220,230,0.15)] scale-[0.98] active:scale-95 transition-transform" href="#">
+<span class="material-symbols-outlined" style="font-variation-settings: 'FILL' 1;">account_circle</span>
+                    Business Profile
+                </a>
+<a class="flex items-center gap-3 px-4 py-3 text-on-surface-variant font-medium transition-all duration-200 hover:bg-surface-variant/20 hover:text-primary hover:shadow-[0_0_10px_rgba(0,220,230,0.1)] scale-[0.98] active:scale-95 rounded-lg" href="#">
+<span class="material-symbols-outlined" style="font-variation-settings: 'FILL' 0;">auto_awesome</span>
+                    Content Generator
+                </a>
+<a class="flex items-center gap-3 px-4 py-3 text-on-surface-variant font-medium transition-all duration-200 hover:bg-surface-variant/20 hover:text-primary hover:shadow-[0_0_10px_rgba(0,220,230,0.1)] scale-[0.98] active:scale-95 rounded-lg" href="#">
+<span class="material-symbols-outlined" style="font-variation-settings: 'FILL' 0;">perm_media</span>
+                    AI Media Studio
+                </a>
+<a class="flex items-center gap-3 px-4 py-3 text-on-surface-variant font-medium transition-all duration-200 hover:bg-surface-variant/20 hover:text-primary hover:shadow-[0_0_10px_rgba(0,220,230,0.1)] scale-[0.98] active:scale-95 rounded-lg" href="#">
+<span class="material-symbols-outlined" style="font-variation-settings: 'FILL' 0;">campaign</span>
+                    AI Campaigns
+                </a>
+<a class="flex items-center gap-3 px-4 py-3 text-on-surface-variant font-medium transition-all duration-200 hover:bg-surface-variant/20 hover:text-primary hover:shadow-[0_0_10px_rgba(0,220,230,0.1)] scale-[0.98] active:scale-95 rounded-lg" href="#">
+<span class="material-symbols-outlined" style="font-variation-settings: 'FILL' 0;">calendar_month</span>
+                    Content Calendar
+                </a>
+<a class="flex items-center gap-3 px-4 py-3 text-on-surface-variant font-medium transition-all duration-200 hover:bg-surface-variant/20 hover:text-primary hover:shadow-[0_0_10px_rgba(0,220,230,0.1)] scale-[0.98] active:scale-95 rounded-lg" href="#">
+<span class="material-symbols-outlined" style="font-variation-settings: 'FILL' 0;">schedule</span>
+                    Scheduled Posts
+                </a>
+<a class="flex items-center gap-3 px-4 py-3 text-on-surface-variant font-medium transition-all duration-200 hover:bg-surface-variant/20 hover:text-primary hover:shadow-[0_0_10px_rgba(0,220,230,0.1)] scale-[0.98] active:scale-95 rounded-lg" href="#">
+<span class="material-symbols-outlined" style="font-variation-settings: 'FILL' 0;">share</span>
+                    Social Accounts
+                </a>
+<a class="flex items-center gap-3 px-4 py-3 text-on-surface-variant font-medium transition-all duration-200 hover:bg-surface-variant/20 hover:text-primary hover:shadow-[0_0_10px_rgba(0,220,230,0.1)] scale-[0.98] active:scale-95 rounded-lg" href="#">
+<span class="material-symbols-outlined" style="font-variation-settings: 'FILL' 0;">analytics</span>
+                    Analytics
+                </a>
+<a class="flex items-center gap-3 px-4 py-3 text-on-surface-variant font-medium transition-all duration-200 hover:bg-surface-variant/20 hover:text-primary hover:shadow-[0_0_10px_rgba(0,220,230,0.1)] scale-[0.98] active:scale-95 rounded-lg" href="#">
+<span class="material-symbols-outlined" style="font-variation-settings: 'FILL' 0;">insights</span>
+                    AI Trend Radar
+                </a>
+<a class="flex items-center gap-3 px-4 py-3 text-on-surface-variant font-medium transition-all duration-200 hover:bg-surface-variant/20 hover:text-primary hover:shadow-[0_0_10px_rgba(0,220,230,0.1)] scale-[0.98] active:scale-95 rounded-lg" href="#">
+<span class="material-symbols-outlined" style="font-variation-settings: 'FILL' 0;">palette</span>
+                    Brand Kit
+                </a>
+</div>
+<div class="pt-4 border-t border-white/5">
+<a class="flex items-center gap-3 px-4 py-3 text-on-surface-variant font-medium transition-all duration-200 hover:bg-surface-variant/20 hover:text-primary hover:shadow-[0_0_10px_rgba(0,220,230,0.1)] scale-[0.98] active:scale-95 rounded-lg" href="#">
+<span class="material-symbols-outlined" style="font-variation-settings: 'FILL' 0;">settings</span>
+                    Settings
+                </a>
+</div>
+</div>
+</nav>
+<!-- Main Content Area -->
+<main class="flex-1 md:ml-72 flex flex-col min-h-screen w-full relative z-10">
+<!-- TopAppBar -->
+<header class="flex justify-between items-center h-16 px-gutter bg-background/60 backdrop-blur-md sticky top-0 z-40 border-b border-white/5 font-body-sm text-body-sm">
+<div class="flex items-center gap-4 w-full max-w-md">
+<!-- Mobile Menu Toggle (hidden on md) -->
+<button class="md:hidden text-on-surface-variant hover:text-primary transition-colors cursor-pointer active:opacity-80">
+<span class="material-symbols-outlined">menu</span>
+</button>
+<h1 class="md:hidden font-headline-md text-headline-md text-primary font-bold">Content OS</h1>
+<!-- Search Bar -->
+<div class="hidden md:flex relative w-full items-center">
+<span class="material-symbols-outlined absolute left-3 text-outline">search</span>
+<input class="w-full bg-[#05070A] border border-white/10 rounded-full py-2 pl-10 pr-4 text-on-surface focus:outline-none focus:border-primary focus:ring-1 focus:ring-primary transition-all duration-300 placeholder-outline/50" placeholder="Search profiles, campaigns..." type="text"/>
+</div>
+</div>
+<div class="flex items-center gap-4">
+<button class="text-on-surface-variant hover:text-primary transition-colors cursor-pointer active:opacity-80 relative">
+<span class="material-symbols-outlined">notifications</span>
+<span class="absolute top-0 right-0 w-2 h-2 bg-primary rounded-full"></span>
+</button>
+<button class="text-on-surface-variant hover:text-secondary transition-colors cursor-pointer active:opacity-80">
+<span class="material-symbols-outlined">spark</span>
+</button>
+<button class="text-on-surface-variant hover:text-primary transition-colors cursor-pointer active:opacity-80">
+<span class="material-symbols-outlined">account_circle</span>
+</button>
+</div>
+</header>
+<!-- Page Content Canvas -->
+<div class="p-gutter md:p-8 space-y-stack-lg max-w-7xl mx-auto w-full">
+<!-- Page Header -->
+<div class="flex flex-col md:flex-row md:items-end justify-between gap-4">
+<div>
+<h2 class="font-headline-xl text-headline-xl text-primary font-bold tracking-tight mb-2">Business Profile</h2>
+<p class="font-body-lg text-body-lg text-on-surface-variant">Define your brand identity to power AI-generated content.</p>
+</div>
+<div class="flex gap-3">
+<button class="px-4 py-2 rounded-lg font-data-mono text-data-mono font-medium border border-white/10 bg-surface-variant/30 hover:bg-surface-variant/50 hover:border-primary/50 transition-all text-on-surface flex items-center gap-2">
+<span class="material-symbols-outlined text-[18px]">history</span>
+                        Revert Changes
+                    </button>
+<button class="px-6 py-2 rounded-lg font-data-mono text-data-mono font-bold bg-gradient-to-r from-primary-container to-secondary-container text-on-primary-fixed shadow-[0_0_15px_rgba(0,220,230,0.3)] hover:shadow-[0_0_25px_rgba(0,220,230,0.5)] transition-all flex items-center gap-2">
+<span class="material-symbols-outlined text-[18px]">save</span>
+                        Save Profile
+                    </button>
+</div>
+</div>
+<!-- Bento Grid Layout -->
+<div class="grid grid-cols-1 md:grid-cols-12 gap-6">
+<!-- Company Overview (Col Span 8) -->
+<div class="glass-card rounded-xl p-card-padding col-span-1 md:col-span-8 flex flex-col gap-6 glow-hover transition-all duration-300">
+<div class="flex items-center gap-3 border-b border-white/5 pb-4">
+<span class="material-symbols-outlined text-primary">domain</span>
+<h3 class="font-headline-md text-headline-md font-semibold text-primary">Company Overview</h3>
+</div>
+<div class="grid grid-cols-1 md:grid-cols-2 gap-6">
+<div class="space-y-2">
+<label class="font-label-caps text-label-caps text-outline uppercase">Company Name</label>
+<input class="w-full bg-[#05070A] border border-white/10 rounded-lg p-3 text-on-surface focus:outline-none focus:border-primary focus:shadow-[0_0_10px_rgba(0,220,230,0.2)] transition-all font-body-lg" type="text" value="Nexus Tech Solutions"/>
+</div>
+<div class="space-y-2">
+<label class="font-label-caps text-label-caps text-outline uppercase">Industry</label>
+<select class="w-full bg-[#05070A] border border-white/10 rounded-lg p-3 text-on-surface focus:outline-none focus:border-primary focus:shadow-[0_0_10px_rgba(0,220,230,0.2)] transition-all font-body-lg appearance-none">
+<option>Software / SaaS</option>
+<option>E-commerce</option>
+<option>Finance</option>
+</select>
+</div>
+<div class="space-y-2 md:col-span-2">
+<label class="font-label-caps text-label-caps text-outline uppercase flex justify-between">
+                                Short Description
+                                <span class="text-primary/60 flex items-center gap-1"><span class="material-symbols-outlined text-[14px]">auto_awesome</span> AI Optimized</span>
+</label>
+<div class="ai-gradient-border rounded-lg p-[1px]">
+<textarea class="w-full bg-[#05070A] rounded-lg p-3 text-on-surface focus:outline-none border-none font-body-lg resize-none" rows="3">Nexus Tech provides enterprise-grade AI infrastructure for mid-market companies aiming to scale their operations securely.</textarea>
+</div>
+</div>
+</div>
+</div>
+<!-- Brand Voice (Col Span 4) -->
+<div class="glass-card rounded-xl p-card-padding col-span-1 md:col-span-4 flex flex-col gap-6 glow-hover transition-all duration-300">
+<div class="flex items-center justify-between border-b border-white/5 pb-4">
+<div class="flex items-center gap-3">
+<span class="material-symbols-outlined text-secondary">record_voice_over</span>
+<h3 class="font-headline-md text-headline-md font-semibold text-secondary">Brand Voice</h3>
+</div>
+<button class="text-secondary/80 hover:text-secondary"><span class="material-symbols-outlined">tune</span></button>
+</div>
+<div class="space-y-4">
+<div class="bg-surface-container-low/50 rounded-lg p-4 border border-white/5">
+<div class="flex justify-between items-center mb-2">
+<span class="font-body-sm text-on-surface">Tone Tone</span>
+<span class="font-label-caps text-primary bg-primary/10 px-2 py-1 rounded">AUTHORITATIVE</span>
+</div>
+<input class="w-full accent-primary" max="100" min="1" type="range" value="75"/>
+</div>
+<div class="bg-surface-container-low/50 rounded-lg p-4 border border-white/5">
+<div class="flex justify-between items-center mb-2">
+<span class="font-body-sm text-on-surface">Formality</span>
+<span class="font-label-caps text-secondary bg-secondary/10 px-2 py-1 rounded">PROFESSIONAL</span>
+</div>
+<input class="w-full accent-secondary" max="100" min="1" type="range" value="80"/>
+</div>
+<div class="flex flex-wrap gap-2 mt-2">
+<span class="px-3 py-1 rounded-full text-xs bg-white/5 border border-white/10 text-on-surface-variant flex items-center gap-1"><span class="material-symbols-outlined text-[12px]">check</span> Innovative</span>
+<span class="px-3 py-1 rounded-full text-xs bg-white/5 border border-white/10 text-on-surface-variant flex items-center gap-1"><span class="material-symbols-outlined text-[12px]">check</span> Direct</span>
+<span class="px-3 py-1 rounded-full text-xs bg-white/5 border border-white/10 text-on-surface-variant flex items-center gap-1"><span class="material-symbols-outlined text-[12px]">add</span> Add Keyword</span>
+</div>
+</div>
+</div>
+<!-- Brand DNA (Col Span 6) -->
+<div class="glass-card rounded-xl p-card-padding col-span-1 md:col-span-6 flex flex-col gap-6 glow-hover transition-all duration-300">
+<div class="flex items-center gap-3 border-b border-white/5 pb-4">
+<span class="material-symbols-outlined text-tertiary-fixed-dim">psychology</span>
+<h3 class="font-headline-md text-headline-md font-semibold text-tertiary-fixed-dim">Brand DNA</h3>
+</div>
+<div class="space-y-6">
+<div class="space-y-2">
+<label class="font-label-caps text-label-caps text-outline uppercase">Mission Statement</label>
+<textarea class="w-full bg-[#05070A] border border-white/10 rounded-lg p-3 text-on-surface focus:outline-none focus:border-tertiary-fixed-dim focus:shadow-[0_0_10px_rgba(58,226,117,0.2)] transition-all font-body-lg resize-none" rows="2">To democratize access to advanced AI infrastructure for businesses of all sizes.</textarea>
+</div>
+<div class="space-y-2">
+<label class="font-label-caps text-label-caps text-outline uppercase">Core Values</label>
+<div class="flex flex-wrap gap-2">
+<div class="bg-[#05070A] border border-white/10 rounded-lg px-4 py-2 text-on-surface flex items-center gap-2">
+                                    Transparency <button><span class="material-symbols-outlined text-[16px] text-outline hover:text-error transition-colors">close</span></button>
+</div>
+<div class="bg-[#05070A] border border-white/10 rounded-lg px-4 py-2 text-on-surface flex items-center gap-2">
+                                    Innovation <button><span class="material-symbols-outlined text-[16px] text-outline hover:text-error transition-colors">close</span></button>
+</div>
+<div class="bg-[#05070A] border border-white/10 rounded-lg px-4 py-2 text-on-surface flex items-center gap-2">
+                                    Security <button><span class="material-symbols-outlined text-[16px] text-outline hover:text-error transition-colors">close</span></button>
+</div>
+<button class="border border-dashed border-white/20 rounded-lg px-4 py-2 text-outline hover:text-primary hover:border-primary transition-colors flex items-center gap-1">
+<span class="material-symbols-outlined text-[16px]">add</span> Add Value
+                                </button>
+</div>
+</div>
+</div>
+</div>
+<!-- Target Audience (Col Span 6) -->
+<div class="glass-card rounded-xl p-card-padding col-span-1 md:col-span-6 flex flex-col gap-6 glow-hover transition-all duration-300">
+<div class="flex items-center justify-between border-b border-white/5 pb-4">
+<div class="flex items-center gap-3">
+<span class="material-symbols-outlined text-primary-fixed">group</span>
+<h3 class="font-headline-md text-headline-md font-semibold text-primary-fixed">Target Audience</h3>
+</div>
+<button class="text-primary-fixed hover:bg-primary-fixed/10 px-3 py-1 rounded-md transition-colors font-body-sm flex items-center gap-1">
+<span class="material-symbols-outlined text-[18px]">add</span> New Persona
+                        </button>
+</div>
+<div class="grid grid-cols-1 sm:grid-cols-2 gap-4">
+<!-- Persona Card 1 -->
+<div class="bg-surface-container-low/50 border border-white/5 rounded-lg p-4 hover:border-primary-fixed/30 transition-all cursor-pointer relative group">
+<div class="absolute top-3 right-3 opacity-0 group-hover:opacity-100 transition-opacity">
+<span class="material-symbols-outlined text-outline hover:text-primary text-[18px]">edit</span>
+</div>
+<h4 class="font-data-mono text-primary-fixed mb-1">Tech CTOs</h4>
+<p class="font-body-sm text-on-surface-variant mb-3">Decision makers looking for reliable infrastructure scaling.</p>
+<div class="flex flex-wrap gap-1">
+<span class="text-[10px] uppercase bg-white/5 px-2 py-0.5 rounded text-outline">B2B</span>
+<span class="text-[10px] uppercase bg-white/5 px-2 py-0.5 rounded text-outline">Enterprise</span>
+</div>
+</div>
+<!-- Persona Card 2 -->
+<div class="bg-surface-container-low/50 border border-white/5 rounded-lg p-4 hover:border-primary-fixed/30 transition-all cursor-pointer relative group">
+<div class="absolute top-3 right-3 opacity-0 group-hover:opacity-100 transition-opacity">
+<span class="material-symbols-outlined text-outline hover:text-primary text-[18px]">edit</span>
+</div>
+<h4 class="font-data-mono text-primary-fixed mb-1">Lead Developers</h4>
+<p class="font-body-sm text-on-surface-variant mb-3">Technical influencers focused on API capabilities and docs.</p>
+<div class="flex flex-wrap gap-1">
+<span class="text-[10px] uppercase bg-white/5 px-2 py-0.5 rounded text-outline">Technical</span>
+<span class="text-[10px] uppercase bg-white/5 px-2 py-0.5 rounded text-outline">Mid-Market</span>
+</div>
+</div>
+</div>
+</div>
+</div> <!-- End Bento Grid -->
+</div>
+</main>
+</body></html>

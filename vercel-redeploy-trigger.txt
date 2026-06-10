@@ -1,0 +1,2 @@
+Redeploy trigger after Next.js 16 route params fix.
+Commit includes updated app/api/social/accounts/[id]/route.ts.

@@ -1,0 +1,620 @@
+<!DOCTYPE html>
+
+<html class="dark" lang="en"><head>
+<meta charset="utf-8"/>
+<meta content="width=device-width, initial-scale=1.0" name="viewport"/>
+<title>AI Campaign Generator - Content OS</title>
+<!-- Tailwind CSS v3 with Plugins -->
+<script src="https://cdn.tailwindcss.com?plugins=forms,container-queries"></script>
+<!-- Google Fonts: Inter -->
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&amp;display=swap" rel="stylesheet"/>
+<!-- Lucide Icons (CDN) -->
+<script src="https://unpkg.com/lucide@latest"></script>
+<script>
+    tailwind.config = {
+      darkMode: 'class',
+      theme: {
+        extend: {
+          colors: {
+            surface: '#0f131d',
+            'surface-container-lowest': '#0a0e18',
+            'surface-container-low': '#171b26',
+            'surface-bright': '#353944',
+            primary: '#00f2fe',
+            secondary: '#4facfe',
+            accent: '#8b5cf6',
+          },
+          fontFamily: {
+            sans: ['Inter', 'sans-serif'],
+          },
+        }
+      }
+    }
+  </script>
+<style data-purpose="custom-styling">
+    :root {
+      --mouse-x: 50%;
+      --mouse-y: 50%;
+    }
+    body {
+      background-color: #0a0e18;
+      color: #e2e8f0;
+      font-family: 'Inter', sans-serif;
+    }
+    .glass-card {
+      position: relative;
+      background: rgba(23, 27, 38, 0.6);
+      backdrop-filter: blur(12px);
+      border: 1px solid rgba(255, 255, 255, 0.05);
+      overflow: hidden;
+    }
+    /* Mouse-tracking glow effect */
+    .glass-card::before {
+      content: "";
+      position: absolute;
+      inset: 0;
+      background: radial-gradient(400px circle at var(--mouse-x) var(--mouse-y), rgba(0, 242, 254, 0.08), transparent 40%);
+      pointer-events: none;
+      z-index: 0;
+    }
+    /* Ensure content stays above the glow */
+    .glass-card > * {
+      position: relative;
+      z-index: 1;
+    }
+    .gradient-border {
+      position: relative;
+      background: #171b26;
+      border-radius: 0.5rem;
+    }
+    .gradient-border::before {
+      content: "";
+      position: absolute;
+      inset: -1px;
+      border-radius: 0.5rem;
+      padding: 1px;
+      background: linear-gradient(to right, #00f2fe, #8b5cf6);
+      -webkit-mask: linear-gradient(#fff 0 0) content-box, linear-gradient(#fff 0 0);
+      mask: linear-gradient(#fff 0 0) content-box, linear-gradient(#fff 0 0);
+      -webkit-mask-composite: xor;
+      mask-composite: exclude;
+      pointer-events: none;
+    }
+    .text-gradient {
+      background: linear-gradient(to right, #00f2fe, #4facfe);
+      -webkit-background-clip: text;
+      -webkit-text-fill-color: transparent;
+    }
+    .active-nav-item {
+      background: rgba(0, 242, 254, 0.1);
+      border-left: 4px solid #00f2fe;
+      color: #00f2fe;
+      box-shadow: inset 10px 0 20px -10px rgba(0, 242, 254, 0.3);
+    }
+    .custom-scrollbar::-webkit-scrollbar {
+      width: 4px;
+    }
+    .custom-scrollbar::-webkit-scrollbar-track {
+      background: transparent;
+    }
+    .custom-scrollbar::-webkit-scrollbar-thumb {
+      background: #353944;
+      border-radius: 10px;
+    }
+    /* Circular Progress via SVG */
+    .progress-ring__circle {
+      transition: stroke-dashoffset 0.35s;
+      transform: rotate(-90deg);
+      transform-origin: 50% 50%;
+    }
+  </style>
+</head>
+<body class="flex h-screen overflow-hidden">
+<!-- BEGIN: Sidebar -->
+<aside class="w-64 h-full flex flex-col bg-surface-container-lowest border-r border-white/10 shrink-0" data-purpose="sidebar-navigation">
+<div class="p-6">
+<div class="flex items-center gap-2 mb-8">
+<div class="w-8 h-8 bg-gradient-to-tr from-primary to-accent rounded flex items-center justify-center">
+<i class="w-5 h-5 text-white" data-lucide="sparkles"></i>
+</div>
+<div>
+<h1 class="text-lg font-bold tracking-tight">CONTENT OS</h1>
+<p class="text-[10px] text-primary tracking-widest font-bold uppercase">AI Marketing OS</p>
+</div>
+</div>
+<nav class="space-y-1">
+<a class="flex items-center gap-3 px-4 py-2.5 text-sm text-gray-400 hover:bg-white/5 rounded-lg transition-all" href="#">
+<i class="w-4 h-4" data-lucide="grid-3x3"></i> Dashboard
+        </a>
+<a class="flex items-center gap-3 px-4 py-2.5 text-sm text-gray-400 hover:bg-white/5 rounded-lg transition-all" href="#">
+<i class="w-4 h-4" data-lucide="briefcase"></i> Business Profile
+        </a>
+<a class="flex items-center gap-3 px-4 py-2.5 text-sm text-gray-400 hover:bg-white/5 rounded-lg transition-all" href="#">
+<i class="w-4 h-4" data-lucide="wand-2"></i> Content Generator
+        </a>
+<a class="flex items-center gap-3 px-4 py-2.5 text-sm text-gray-400 hover:bg-white/5 rounded-lg transition-all" href="#">
+<i class="w-4 h-4" data-lucide="clapperboard"></i> AI Media Studio
+        </a>
+<a class="flex items-center gap-3 px-4 py-2.5 text-sm active-nav-item font-semibold rounded-lg transition-all" href="#">
+<i class="w-4 h-4" data-lucide="megaphone"></i> AI Campaigns
+        </a>
+<a class="flex items-center gap-3 px-4 py-2.5 text-sm text-gray-400 hover:bg-white/5 rounded-lg transition-all" href="#">
+<i class="w-4 h-4" data-lucide="calendar"></i> Content Calendar
+        </a>
+<a class="flex items-center gap-3 px-4 py-2.5 text-sm text-gray-400 hover:bg-white/5 rounded-lg transition-all" href="#">
+<i class="w-4 h-4" data-lucide="clock"></i> Scheduled Posts
+        </a>
+<a class="flex items-center gap-3 px-4 py-2.5 text-sm text-gray-400 hover:bg-white/5 rounded-lg transition-all" href="#">
+<i class="w-4 h-4" data-lucide="users-2"></i> Social Accounts
+        </a>
+<a class="flex items-center gap-3 px-4 py-2.5 text-sm text-gray-400 hover:bg-white/5 rounded-lg transition-all" href="#">
+<i class="w-4 h-4" data-lucide="bar-chart-3"></i> Analytics
+        </a>
+<a class="flex items-center gap-3 px-4 py-2.5 text-sm text-gray-400 hover:bg-white/5 rounded-lg transition-all" href="#">
+<i class="w-4 h-4" data-lucide="compass"></i> AI Trend Radar
+        </a>
+<a class="flex items-center gap-3 px-4 py-2.5 text-sm text-gray-400 hover:bg-white/5 rounded-lg transition-all" href="#">
+<i class="w-4 h-4" data-lucide="palette"></i> Brand Kit
+        </a>
+<a class="flex items-center gap-3 px-4 py-2.5 text-sm text-gray-400 hover:bg-white/5 rounded-lg transition-all" href="#">
+<i class="w-4 h-4" data-lucide="settings"></i> Settings
+        </a>
+</nav>
+</div>
+<!-- Upgrade Card -->
+<div class="mt-auto p-4 mx-4 mb-4 glass-card rounded-xl" data-purpose="upgrade-card">
+<div class="flex items-center gap-2 mb-2">
+<i class="w-4 h-4 text-primary" data-lucide="zap"></i>
+<span class="text-xs font-bold uppercase tracking-wider">Upgrade to Pro</span>
+</div>
+<p class="text-[11px] text-gray-400 mb-4 leading-relaxed">Unlock unlimited campaigns, AI models, and premium features.</p>
+<button class="w-full py-2 bg-primary/20 hover:bg-primary/30 text-primary text-xs font-bold rounded-lg border border-primary/20 transition-all">Upgrade Now</button>
+</div>
+<!-- User Profile -->
+<div class="p-4 border-t border-white/5 flex items-center gap-3">
+<div class="w-10 h-10 rounded-lg overflow-hidden bg-surface-bright">
+<img alt="Marcus Williams" class="w-full h-full object-cover" src="https://lh3.googleusercontent.com/aida-public/AB6AXuCAgur2VaQEOJ4Wt7FpThy0mXsWiNJK43TBd6JGbc_Dt-Oe2H4nYyoBZZWeX7nGU2ZY67UShT_x320yh-9bkD-rQPx7GU4n-MqrcMYJoAWsHR3d3yRIg-Wu-IimNY7f_5NRn85E6PaU4bni9j4xG8JtLJ4cwrleGGt5_DQqXd3I-Yj14CN6gIVPAt9gsrIa6W0M5UPH6EhXU3FUsZyxriR08FrT98zechVYwkpqYEwEy8cMGifbo1kDBUiUpanvjpNH-AzUdqhMiRc"/>
+</div>
+<div class="flex-1">
+<p class="text-sm font-semibold">Marcus Williams</p>
+<p class="text-xs text-gray-500">Elite Plan</p>
+</div>
+<i class="w-4 h-4 text-gray-500" data-lucide="chevron-right"></i>
+</div>
+</aside>
+<!-- END: Sidebar -->
+<!-- BEGIN: Main Content Container -->
+<main class="flex-1 flex flex-col h-full overflow-hidden bg-surface">
+<!-- BEGIN: Top Bar -->
+<header class="flex items-center justify-between px-8 py-6 border-b border-white/5" data-purpose="header">
+<div>
+<div class="flex items-center gap-2">
+<i class="w-6 h-6 text-primary" data-lucide="sparkles"></i>
+<h2 class="text-2xl font-bold text-white">AI Campaign Generator</h2>
+</div>
+<p class="text-sm text-gray-400">Generate complete marketing campaigns in seconds with AI</p>
+</div>
+<div class="flex items-center gap-4">
+<button class="flex items-center gap-2 px-4 py-2 text-sm font-medium bg-surface-container-low border border-white/10 rounded-lg hover:bg-white/5 transition-all">
+<i class="w-4 h-4" data-lucide="save"></i> Save Campaign
+        </button>
+<button class="flex items-center gap-2 px-5 py-2.5 text-sm font-bold bg-gradient-to-r from-accent to-secondary text-white rounded-lg hover:shadow-lg hover:shadow-accent/20 transition-all">
+          Generate Campaign <i class="w-4 h-4" data-lucide="chevron-right"></i>
+</button>
+</div>
+</header>
+<!-- END: Top Bar -->
+<!-- BEGIN: Dashboard Body (Scrollable) -->
+<div class="flex-1 overflow-y-auto p-8 custom-scrollbar">
+<div class="grid grid-cols-12 gap-6">
+<!-- Left Area -->
+<div class="col-span-9 space-y-6">
+<!-- Section 1: Campaign Setup -->
+<section class="glass-card p-6 rounded-2xl" data-purpose="campaign-setup">
+<div class="flex items-center justify-between mb-6">
+<div class="flex items-center gap-3">
+<span class="w-7 h-7 flex items-center justify-center rounded-full bg-primary/20 text-primary font-bold text-xs">1</span>
+<h3 class="text-sm font-bold uppercase tracking-wider text-gray-300">Campaign Setup</h3>
+</div>
+<button class="flex items-center gap-2 text-xs text-gray-400 hover:text-white transition-colors">
+<i class="w-3.5 h-3.5" data-lucide="edit-3"></i> Edit Inputs
+              </button>
+</div>
+<div class="grid grid-cols-6 gap-4">
+<div class="col-span-1">
+<label class="block text-[10px] uppercase text-gray-500 font-bold mb-1.5">Business Type</label>
+<div class="flex items-center justify-between p-3 bg-surface-container-lowest border border-white/5 rounded-lg text-xs cursor-pointer">
+<div class="flex items-center gap-2"><i class="w-3.5 h-3.5 text-primary" data-lucide="scissors"></i> Barber Shop</div>
+<i class="w-3.5 h-3.5 text-gray-500" data-lucide="chevron-down"></i>
+</div>
+</div>
+<div class="col-span-1">
+<label class="block text-[10px] uppercase text-gray-500 font-bold mb-1.5">Objective</label>
+<div class="flex items-center justify-between p-3 bg-surface-container-lowest border border-white/5 rounded-lg text-xs cursor-pointer">
+<div class="flex items-center gap-2"><i class="w-3.5 h-3.5 text-primary" data-lucide="target"></i> Get More Clients</div>
+<i class="w-3.5 h-3.5 text-gray-500" data-lucide="chevron-down"></i>
+</div>
+</div>
+<div class="col-span-1">
+<label class="block text-[10px] uppercase text-gray-500 font-bold mb-1.5">Offer / Promotion</label>
+<div class="flex items-center justify-between p-3 bg-surface-container-lowest border border-white/5 rounded-lg text-xs cursor-pointer">
+<div class="flex items-center gap-2"><i class="w-3.5 h-3.5 text-primary" data-lucide="ticket"></i> 20% Off First Haircut</div>
+<i class="w-3.5 h-3.5 text-gray-500" data-lucide="chevron-down"></i>
+</div>
+</div>
+<div class="col-span-1">
+<label class="block text-[10px] uppercase text-gray-500 font-bold mb-1.5">Platforms</label>
+<div class="flex items-center gap-2 p-2 bg-surface-container-lowest border border-white/5 rounded-lg">
+<div class="w-6 h-6 rounded bg-gradient-to-tr from-pink-500 to-yellow-500 flex items-center justify-center"><i class="w-3.5 h-3.5 text-white" data-lucide="instagram"></i></div>
+<div class="w-6 h-6 rounded bg-black flex items-center justify-center border border-white/10"><i class="w-3.5 h-3.5 text-white" data-lucide="music-2"></i></div>
+<div class="w-6 h-6 rounded bg-blue-600 flex items-center justify-center"><i class="w-3.5 h-3.5 text-white" data-lucide="facebook"></i></div>
+<div class="text-[10px] font-bold text-gray-400 ml-1">+2</div>
+</div>
+</div>
+<div class="col-span-1">
+<label class="block text-[10px] uppercase text-gray-500 font-bold mb-1.5">Duration</label>
+<div class="flex items-center justify-between p-3 bg-surface-container-lowest border border-white/5 rounded-lg text-xs cursor-pointer">
+<div class="flex items-center gap-2"><i class="w-3.5 h-3.5 text-primary" data-lucide="calendar"></i> 7 Days</div>
+<i class="w-3.5 h-3.5 text-gray-500" data-lucide="chevron-down"></i>
+</div>
+</div>
+<div class="col-span-1">
+<label class="block text-[10px] uppercase text-gray-500 font-bold mb-1.5">Tone</label>
+<div class="flex items-center justify-between p-3 bg-surface-container-lowest border border-white/5 rounded-lg text-xs cursor-pointer">
+<div class="flex items-center gap-2"><i class="w-3.5 h-3.5 text-primary" data-lucide="smile"></i> Bold &amp; Confident</div>
+<i class="w-3.5 h-3.5 text-gray-500" data-lucide="chevron-down"></i>
+</div>
+</div>
+</div>
+</section>
+<!-- Section 2: AI Generated Campaign -->
+<section class="glass-card p-6 rounded-2xl" data-purpose="campaign-preview">
+<div class="flex items-center justify-between mb-6">
+<div class="flex items-center gap-3">
+<span class="w-7 h-7 flex items-center justify-center rounded-full bg-primary/20 text-primary font-bold text-xs">2</span>
+<h3 class="text-sm font-bold uppercase tracking-wider text-gray-300">AI Generated Campaign</h3>
+</div>
+<div class="flex gap-2">
+<button class="flex items-center gap-2 px-4 py-1.5 text-xs bg-surface-bright/20 border border-white/5 rounded-lg hover:bg-surface-bright/40 transition-all">
+<i class="w-3.5 h-3.5" data-lucide="rotate-ccw"></i> Regenerate
+                </button>
+<button class="flex items-center gap-2 px-4 py-1.5 text-xs bg-surface-bright/20 border border-white/5 rounded-lg hover:bg-surface-bright/40 transition-all">
+<i class="w-3.5 h-3.5" data-lucide="download"></i> Export Campaign
+                </button>
+</div>
+</div>
+<div class="flex gap-8">
+<!-- Campaign Poster -->
+<div class="w-1/3 relative group overflow-hidden rounded-xl">
+<img alt="Campaign Visual" class="w-full h-auto aspect-square object-cover transition-transform duration-700 group-hover:scale-105" src="https://lh3.googleusercontent.com/aida-public/AB6AXuDnFlC4M4HATAqxcy-c9fY_ZBrpFOg84M7fT5B89yX8F066V5U3XkaCRoepHJpPX-14JVGfrvALcFe7dfjRsbwUCbHySdfYCFm-wm_UWioYpker3Exm5ayoOgXma9sjMr-VfNxykhsi1Q5cnqtuOJvqbRQXtiLTKNae08hRaGwQvH5pTHiEt0wLcDvisbvP835RGixD6Vm10TiDNNCjG8RXUfDr7Mf-XJ-NHnok6-944YsU2_uUDmIjlxDjk8RW57vu-SQ9lZbPwYE"/>
+<div class="absolute inset-0 bg-gradient-to-t from-black/80 via-black/20 to-transparent p-6 flex flex-col justify-end">
+<h4 class="text-2xl font-black leading-tight text-white mb-1">YOUR BEST CUT AWAITS</h4>
+<p class="text-primary font-bold italic mb-4">Book Now</p>
+<p class="text-[10px] text-gray-300 uppercase tracking-widest font-bold">20% Off First Haircut • Limited Time Only</p>
+</div>
+</div>
+<!-- Campaign Details & Stats -->
+<div class="flex-1 flex flex-col">
+<div class="flex items-center gap-2 mb-2">
+<span class="bg-primary/10 text-primary text-[10px] font-bold px-2 py-0.5 rounded border border-primary/20 flex items-center gap-1">
+<i class="w-3 h-3" data-lucide="sparkles"></i> AI Campaign
+                  </span>
+</div>
+<h2 class="text-2xl font-extrabold text-white mb-2">Fresh Cut. Fresh Start. <span class="text-primary">✂️</span></h2>
+<p class="text-sm text-gray-400 mb-8 max-w-lg">A 7-day campaign designed to attract new clients, showcase your skills, and drive bookings with a limited-time offer.</p>
+<div class="grid grid-cols-4 gap-4 mt-auto">
+<div class="p-4 bg-surface-container-lowest border border-white/5 rounded-xl">
+<p class="text-[10px] uppercase text-gray-500 font-bold mb-1">Estimated Reach</p>
+<p class="text-lg font-bold text-white">12.5K – 18.7K</p>
+<p class="text-[10px] text-green-400 flex items-center gap-1 mt-1 font-bold"><i class="w-3 h-3" data-lucide="trending-up"></i> 32%</p>
+</div>
+<div class="p-4 bg-surface-container-lowest border border-white/5 rounded-xl">
+<p class="text-[10px] uppercase text-gray-500 font-bold mb-1">Engagement Rate</p>
+<p class="text-lg font-bold text-white">6.8% – 9.3%</p>
+<p class="text-[10px] text-green-400 flex items-center gap-1 mt-1 font-bold"><i class="w-3 h-3" data-lucide="trending-up"></i> 24%</p>
+</div>
+<div class="p-4 bg-surface-container-lowest border border-white/5 rounded-xl">
+<p class="text-[10px] uppercase text-gray-500 font-bold mb-1">Leads Potential</p>
+<p class="text-lg font-bold text-white">28 – 45</p>
+<p class="text-[10px] text-green-400 flex items-center gap-1 mt-1 font-bold"><i class="w-3 h-3" data-lucide="trending-up"></i> 35%</p>
+</div>
+<div class="p-4 bg-surface-container-lowest border border-white/5 rounded-xl flex items-center justify-between">
+<div>
+<p class="text-[10px] uppercase text-gray-500 font-bold mb-1">Campaign Score</p>
+<p class="text-lg font-bold text-white">92<span class="text-xs text-gray-500 font-normal">/100</span></p>
+<p class="text-[10px] text-green-400 font-bold">Excellent</p>
+</div>
+<div class="relative w-10 h-10">
+<svg class="w-full h-full" viewbox="0 0 36 36">
+<circle cx="18" cy="18" fill="none" r="16" stroke="rgba(0, 242, 254, 0.1)" stroke-width="3"></circle>
+<circle cx="18" cy="18" fill="none" r="16" stroke="#00f2fe" stroke-dasharray="100, 100" stroke-dashoffset="8" stroke-linecap="round" stroke-width="3"></circle>
+</svg>
+</div>
+</div>
+</div>
+</div>
+</div>
+<!-- Strategy Tabs -->
+<div class="mt-8">
+<div class="flex items-center gap-8 border-b border-white/5 mb-6">
+<button class="pb-3 text-sm font-bold text-primary border-b-2 border-primary">Campaign Strategy</button>
+<button class="pb-3 text-sm font-medium text-gray-500 hover:text-gray-300">Content Plan</button>
+<button class="pb-3 text-sm font-medium text-gray-500 hover:text-gray-300">Posts (7)</button>
+<button class="pb-3 text-sm font-medium text-gray-500 hover:text-gray-300">Reels (3)</button>
+<button class="pb-3 text-sm font-medium text-gray-500 hover:text-gray-300">Stories (5)</button>
+<button class="pb-3 text-sm font-medium text-gray-500 hover:text-gray-300">Ads (2)</button>
+<button class="pb-3 text-sm font-medium text-gray-500 hover:text-gray-300">Insights</button>
+</div>
+<div class="grid grid-cols-3 gap-6">
+<!-- Strategy Card -->
+<div class="glass-card p-5 rounded-2xl">
+<div class="flex items-center gap-2 mb-4">
+<div class="w-8 h-8 rounded-lg bg-accent/20 flex items-center justify-center">
+<i class="w-4 h-4 text-accent" data-lucide="target"></i>
+</div>
+<h4 class="text-sm font-bold">Campaign Strategy</h4>
+</div>
+<p class="text-xs text-gray-400 leading-relaxed mb-4">This campaign focuses on building local awareness, showcasing your craftsmanship, and converting new clients with a compelling first-time offer.</p>
+<ul class="space-y-2 text-[11px] text-gray-300 font-medium">
+<li class="flex items-center gap-2"><i class="w-3.5 h-3.5 text-green-400" data-lucide="check-circle-2"></i> Build brand awareness</li>
+<li class="flex items-center gap-2"><i class="w-3.5 h-3.5 text-green-400" data-lucide="check-circle-2"></i> Showcase transformations</li>
+<li class="flex items-center gap-2"><i class="w-3.5 h-3.5 text-green-400" data-lucide="check-circle-2"></i> Drive bookings with offer</li>
+<li class="flex items-center gap-2"><i class="w-3.5 h-3.5 text-green-400" data-lucide="check-circle-2"></i> Create urgency &amp; FOMO</li>
+<li class="flex items-center gap-2"><i class="w-3.5 h-3.5 text-green-400" data-lucide="check-circle-2"></i> Encourage shares &amp; saves</li>
+</ul>
+</div>
+<!-- Key Messages -->
+<div class="glass-card p-5 rounded-2xl">
+<div class="flex items-center gap-2 mb-4">
+<div class="w-8 h-8 rounded-lg bg-secondary/20 flex items-center justify-center">
+<i class="w-4 h-4 text-secondary" data-lucide="message-square"></i>
+</div>
+<h4 class="text-sm font-bold">Key Messages</h4>
+</div>
+<div class="space-y-3">
+<div class="flex gap-3">
+<span class="text-xs text-secondary font-black">1</span>
+<p class="text-xs text-gray-300 font-medium">Look Your Best. Feel Your Best.</p>
+</div>
+<div class="flex gap-3">
+<span class="text-xs text-secondary font-black">2</span>
+<p class="text-xs text-gray-300 font-medium">Premium Cuts. Unmatched Style.</p>
+</div>
+<div class="flex gap-3">
+<span class="text-xs text-secondary font-black">3</span>
+<p class="text-xs text-gray-300 font-medium">20% Off Your First Haircut.</p>
+</div>
+<div class="flex gap-3">
+<span class="text-xs text-secondary font-black">4</span>
+<p class="text-xs text-gray-300 font-medium">Your Style. Our Expertise.</p>
+</div>
+<div class="flex gap-3">
+<span class="text-xs text-secondary font-black">5</span>
+<p class="text-xs text-gray-300 font-medium">Fresh Hair. Fresh Confidence.</p>
+</div>
+</div>
+</div>
+<!-- Target Audience -->
+<div class="glass-card p-5 rounded-2xl">
+<div class="flex items-center gap-2 mb-4">
+<div class="w-8 h-8 rounded-lg bg-green-500/20 flex items-center justify-center">
+<i class="w-4 h-4 text-green-500" data-lucide="users"></i>
+</div>
+<h4 class="text-sm font-bold">Target Audience</h4>
+</div>
+<div class="space-y-2.5">
+<div class="flex items-center justify-between">
+<span class="text-[10px] text-gray-500 font-bold uppercase">Age Range</span>
+<span class="text-xs font-semibold">18 – 35</span>
+</div>
+<div class="flex items-center justify-between">
+<span class="text-[10px] text-gray-500 font-bold uppercase">Primary</span>
+<span class="text-xs font-semibold">Men</span>
+</div>
+<div class="flex items-center justify-between">
+<span class="text-[10px] text-gray-500 font-bold uppercase">Location</span>
+<span class="text-xs font-semibold">Local Area (10mi)</span>
+</div>
+<div class="flex items-center justify-between">
+<span class="text-[10px] text-gray-500 font-bold uppercase">Interests</span>
+<span class="text-xs font-semibold text-right">Style, Grooming, Lifestyle</span>
+</div>
+<div class="flex items-center justify-between">
+<span class="text-[10px] text-gray-500 font-bold uppercase">Behaviors</span>
+<span class="text-xs font-semibold">Engaged on IG, TikTok</span>
+</div>
+</div>
+</div>
+</div>
+</div>
+</section>
+<!-- 7-Day Preview -->
+<section class="glass-card p-6 rounded-2xl mb-8" data-purpose="content-preview">
+<div class="flex items-center gap-3 mb-6">
+<i class="w-5 h-5 text-gray-400" data-lucide="calendar"></i>
+<h3 class="text-sm font-bold uppercase tracking-wider text-gray-300">7-Day Content Preview</h3>
+</div>
+<div class="flex gap-4 overflow-x-auto pb-4 custom-scrollbar">
+<!-- Day 1 -->
+<div class="flex-shrink-0 w-44 space-y-2">
+<p class="text-[10px] font-bold text-gray-500">Day 1</p>
+<p class="text-xs font-bold text-white truncate">Intro Post</p>
+<div class="relative aspect-[4/5] rounded-xl overflow-hidden group">
+<img alt="Day 1" class="w-full h-full object-cover" src="https://lh3.googleusercontent.com/aida-public/AB6AXuBt3woiUNtl_WrI6LypDamw4uer24OARILgbVpBMKapG6sFajP28fq1Nqk59jrh6nUh0sUxYYzdyymIYDYVpBPTGhZXahNWcROWychQrSFFfH6l3gYz-1jjoEqF8uPuN1FuX3H0fiwU7H-FqATDdYthl7yQajS_qIZA8xIpkA8Z5Q7SNn7iEQtYBaqMNMYd0q2-rLRGE0MsiEAVeIaqpWLQSV0FN-jb68II911huwm5BB5vP5G1_VrG1I2vqnHixQX3suLyf-IxsCY"/>
+<div class="absolute bottom-2 left-2 flex gap-1">
+<i class="w-3 h-3 text-white" data-lucide="instagram"></i>
+<i class="w-3 h-3 text-white" data-lucide="music-2"></i>
+</div>
+</div>
+</div>
+<!-- Day 2 -->
+<div class="flex-shrink-0 w-44 space-y-2">
+<p class="text-[10px] font-bold text-gray-500">Day 2</p>
+<p class="text-xs font-bold text-white truncate">Transformation</p>
+<div class="relative aspect-[4/5] rounded-xl overflow-hidden group flex gap-0.5">
+<img alt="Before" class="w-1/2 h-full object-cover" src="https://lh3.googleusercontent.com/aida-public/AB6AXuDuoZe7-atrApatG8_NLuA4NsBS3EYi1qJ39iZhkG7VzFehpFPCBTK-ryvW3Px6X4L-NLGb_bURgOTE4l0zb9pVO_275Qx8keaUTZyB-5kY9WQCvJFJQFL17Q1ISNMWCSKKotiOwo9cZzRheoXHyKyfZXuvEWm_aF3RfdK1yr1D2GKvdDLiJdb4GSJ05ILTipAsqXAFU2V1mxqTCzeWPEJR_IlX2vVRqm1PyhdBhjtn-l5JuUjKSq3zU7nHsbyLDTO9-pR-lJqklEg"/>
+<img alt="After" class="w-1/2 h-full object-cover" src="https://lh3.googleusercontent.com/aida-public/AB6AXuBg_OKog4n4NHbkWkF2o2AubEYE5CbDc8uLtkmgVSyNmEmUPBa5ooM4giDzVjVctXX-O_gAVG-884ljQjFkbxkIY9wj6acIvpdKlVBJpMM94BRR89zr2-hcgY1pVIfeIUJiVs6EzXYHL2QsesDb69hb7bDfah0mAmBjml157NMpqOyRjxRrMLpYEtqh0ql7TMKoHJ9xS3VMrMEf52Zlo5WeOtjiFUHVmGMD1QBDxqgT-Us0vPeKGdC0S3JlvqpRA9l9OYfQ-JC8HNk"/>
+<div class="absolute bottom-2 left-2 flex gap-1">
+<i class="w-3 h-3 text-white" data-lucide="instagram"></i>
+<i class="w-3 h-3 text-white" data-lucide="music-2"></i>
+</div>
+</div>
+</div>
+<!-- Day 3 -->
+<div class="flex-shrink-0 w-44 space-y-2">
+<p class="text-[10px] font-bold text-gray-500">Day 3</p>
+<p class="text-xs font-bold text-white truncate">Reel: Fade Process</p>
+<div class="relative aspect-[4/5] rounded-xl overflow-hidden group">
+<img alt="Day 3" class="w-full h-full object-cover" src="https://lh3.googleusercontent.com/aida-public/AB6AXuB-XJk2jRPfZCuYLKc5njJwYeSVJl5T1u643iRkY3fdTVwOa-8pwA2KV7_cX_4mdqbyyxKURuIs8C_GJa4se_5vACs7CQYrNkLcYajPzK6TBHa1tAobbJDKPdOA1w7LXperPGSyKQ8wmgBU0vVVIFziHuH7EYBH9JhyFSg6bn_fJbiMNq4inRGbZgra3dqLLTOzYiEUHhV9YleYVH7ODGLn6dsqQwoNBDhKuAvttyLmsjv_3IMW0QTYGfKj9Vv1FIDh3qaI3oQo4dw"/>
+<div class="absolute inset-0 flex items-center justify-center">
+<div class="w-10 h-10 rounded-full bg-white/20 backdrop-blur flex items-center justify-center"><i class="w-5 h-5 text-white fill-white" data-lucide="play"></i></div>
+</div>
+</div>
+</div>
+<!-- Day 4 -->
+<div class="flex-shrink-0 w-44 space-y-2">
+<p class="text-[10px] font-bold text-gray-500">Day 4</p>
+<p class="text-xs font-bold text-white truncate">Client Testimonial</p>
+<div class="relative aspect-[4/5] rounded-xl overflow-hidden group">
+<img alt="Day 4" class="w-full h-full object-cover" src="https://lh3.googleusercontent.com/aida-public/AB6AXuACPU1VGXkTm3iB4U47Q0oAWF_GMgsPtghUo5UKqmLTdf5FSkXfzAStkaTU_C2LYrRLmj4NsE03kIHWUfM74iuBeWa8OL0hj5_iNal-MMCizPDry_z_MxrfW5gPo8ercHzvd1TCvwNGz3msX2nYiDCuE7Ib_Gjhite8BXeZwN1D-KweI_f0kyjLUxrCmuLfZ8Ema9t8BQ-2eHAHKDhoOYaz29a36D4MjfNRHYCIfGwj_lukEIEXgKak3993Haz9Gox1lUw4K4Jri-8"/>
+</div>
+</div>
+<!-- Day 5 -->
+<div class="flex-shrink-0 w-44 space-y-2">
+<p class="text-[10px] font-bold text-gray-500">Day 5</p>
+<p class="text-xs font-bold text-white truncate">Offer Reminder</p>
+<div class="relative aspect-[4/5] rounded-xl overflow-hidden group bg-gradient-to-tr from-accent/20 to-primary/20 flex flex-col items-center justify-center p-4 border border-white/10">
+<p class="text-2xl font-black text-primary">20% OFF</p>
+<p class="text-[8px] font-bold uppercase tracking-tighter text-white">First Haircut</p>
+</div>
+</div>
+<!-- Day 6 -->
+<div class="flex-shrink-0 w-44 space-y-2">
+<p class="text-[10px] font-bold text-gray-500">Day 6</p>
+<p class="text-xs font-bold text-white truncate">Behind the Scenes</p>
+<div class="relative aspect-[4/5] rounded-xl overflow-hidden group">
+<img alt="Day 6" class="w-full h-full object-cover" src="https://lh3.googleusercontent.com/aida-public/AB6AXuAsTf-rcIRTXbJ9mUpTFDxeoW3Hd8UJtptJefbxgFisf1Yf_3BNbtDR68obJUoirbDIr5mfSq_iSg1hSiNnfNBMEIGk6Zd3qf0Eh0pb6YqeLA8pGxXMiooLmvE2xBOy7yv5d3lmvZeN9Y4g1EP3RIlje-7B-IrS__wy5RfGYL2qMVp8qfnfoPK6lDAJl3cyAxJ2n6wy39wYGv-G_CTz9AdT57f_kIua6qzK87j0OWXcw9xe7J5l-RBe2AABIW8WMMcLOfUfxkfwOMM"/>
+</div>
+</div>
+<!-- Day 7 -->
+<div class="flex-shrink-0 w-44 space-y-2">
+<p class="text-[10px] font-bold text-gray-500">Day 7</p>
+<p class="text-xs font-bold text-white truncate">Last Chance</p>
+<div class="relative aspect-[4/5] rounded-xl overflow-hidden group bg-surface-container-lowest flex items-center justify-center border border-white/10">
+<p class="text-xl font-black text-secondary animate-pulse text-center leading-none">LAST<br/>CHANCE!</p>
+</div>
+</div>
+</div>
+</section>
+</div>
+<!-- Right Sidebar (Campaign Summary) -->
+<div class="col-span-3 space-y-6">
+<aside class="glass-card p-6 rounded-2xl h-full flex flex-col" data-purpose="campaign-summary-panel">
+<div class="flex items-center gap-3 mb-8">
+<span class="w-7 h-7 flex items-center justify-center rounded-full bg-primary/20 text-primary font-bold text-xs">3</span>
+<h3 class="text-sm font-bold uppercase tracking-wider text-gray-300">Campaign Summary</h3>
+</div>
+<!-- Main Score -->
+<div class="flex flex-col items-center mb-8">
+<div class="relative w-32 h-32 mb-4 flex items-center justify-center">
+<svg class="w-full h-full" viewbox="0 0 100 100">
+<circle cx="50" cy="50" fill="none" r="45" stroke="rgba(0, 242, 254, 0.1)" stroke-width="8"></circle>
+<circle class="progress-ring__circle" cx="50" cy="50" fill="none" r="45" stroke="#00f2fe" stroke-dasharray="282.7" stroke-dashoffset="22.6" stroke-linecap="round" stroke-width="8"></circle>
+</svg>
+<div class="absolute inset-0 flex flex-col items-center justify-center">
+<span class="text-4xl font-black text-white">92</span>
+<span class="block text-[10px] text-gray-500 font-bold uppercase">/ 100</span>
+</div>
+</div>
+<h4 class="text-lg font-extrabold text-white">Excellent Campaign</h4>
+<p class="text-center text-[11px] text-gray-400 mt-2 leading-relaxed px-2">This campaign is optimized for maximum engagement and conversions.</p>
+</div>
+<!-- Breakdown -->
+<div class="space-y-4 mb-8">
+<div class="flex items-center justify-between group">
+<div class="flex items-center gap-2">
+<i class="w-4 h-4 text-green-400" data-lucide="check-circle-2"></i>
+<span class="text-xs text-gray-300 font-medium group-hover:text-white transition-colors">Strategy</span>
+</div>
+<span class="text-xs font-bold">18/20</span>
+</div>
+<div class="flex items-center justify-between group">
+<div class="flex items-center gap-2">
+<i class="w-4 h-4 text-green-400" data-lucide="check-circle-2"></i>
+<span class="text-xs text-gray-300 font-medium group-hover:text-white transition-colors">Content Mix</span>
+</div>
+<span class="text-xs font-bold">19/20</span>
+</div>
+<div class="flex items-center justify-between group">
+<div class="flex items-center gap-2">
+<i class="w-4 h-4 text-green-400" data-lucide="check-circle-2"></i>
+<span class="text-xs text-gray-300 font-medium group-hover:text-white transition-colors">Offer Strength</span>
+</div>
+<span class="text-xs font-bold">20/20</span>
+</div>
+<div class="flex items-center justify-between group">
+<div class="flex items-center gap-2">
+<i class="w-4 h-4 text-green-400" data-lucide="check-circle-2"></i>
+<span class="text-xs text-gray-300 font-medium group-hover:text-white transition-colors">Visual Appeal</span>
+</div>
+<span class="text-xs font-bold">17/20</span>
+</div>
+<div class="flex items-center justify-between group">
+<div class="flex items-center gap-2">
+<i class="w-4 h-4 text-green-400" data-lucide="check-circle-2"></i>
+<span class="text-xs text-gray-300 font-medium group-hover:text-white transition-colors">CTA Effectiveness</span>
+</div>
+<span class="text-xs font-bold">18/20</span>
+</div>
+</div>
+<!-- Recommendations -->
+<div class="p-4 bg-primary/5 border border-primary/20 rounded-xl mb-auto" data-purpose="ai-recommendations">
+<div class="flex items-center gap-2 mb-3">
+<i class="w-4 h-4 text-primary" data-lucide="sparkles"></i>
+<h5 class="text-xs font-bold text-primary uppercase">AI Recommendations</h5>
+</div>
+<p class="text-[11px] text-gray-300 leading-relaxed mb-4">Post your transformation reel on Day 3 for maximum impact.</p>
+<p class="text-[11px] text-gray-300">Best time to post: <span class="text-white font-bold">7PM – 9PM</span> local time.</p>
+</div>
+<button class="w-full mt-6 py-3.5 bg-gradient-to-r from-secondary to-primary text-white rounded-xl font-bold text-sm flex items-center justify-center gap-2 hover:opacity-90 transition-all shadow-lg shadow-primary/10 active:scale-95">
+<i class="w-4 h-4" data-lucide="calendar-plus"></i> Add to Calendar
+            </button>
+</aside>
+</div>
+</div>
+</div>
+<!-- END: Dashboard Body -->
+</main>
+<!-- END: Main Content Container -->
+<script>
+    // Initialize Lucide icons
+    lucide.createIcons();
+
+    // Integrate animations script from DOCUMENT_5
+    document.addEventListener('DOMContentLoaded', () => {
+      // Add subtle mouse-tracking glow to glass cards
+      const cards = document.querySelectorAll('.glass-card');
+      
+      cards.forEach(card => {
+        card.addEventListener('mousemove', (e) => {
+          const rect = card.getBoundingClientRect();
+          const x = e.clientX - rect.left;
+          const y = e.clientY - rect.top;
+          
+          card.style.setProperty('--mouse-x', `${x}px`);
+          card.style.setProperty('--mouse-y', `${y}px`);
+        });
+      });
+
+      // Animated background particles/blobs
+      const bgContainer = document.createElement('div');
+      bgContainer.className = 'fixed inset-0 -z-10 overflow-hidden pointer-events-none';
+      bgContainer.innerHTML = `
+        <div class="absolute top-[-10%] left-[-10%] w-[40%] h-[40%] bg-teal-500/10 rounded-full blur-[120px] animate-pulse"></div>
+        <div class="absolute bottom-[-10%] right-[-10%] w-[50%] h-[50%] bg-purple-600/10 rounded-full blur-[150px] animate-pulse" style="animation-delay: 2s"></div>
+        <div class="absolute top-[20%] right-[10%] w-[30%] h-[30%] bg-emerald-500/5 rounded-full blur-[100px] animate-pulse" style="animation-delay: 4s"></div>
+      `;
+      document.body.appendChild(bgContainer);
+    });
+  </script>
+</body></html>
